@@ -17,6 +17,7 @@ class UserFixture extends Fixture {
             $user->setPassword("toto");
             $user->setUsername($faker->userName);
             $user->setRole(RoleEnum::USER);
+            $user->setDetail("fjsefeoisjfseiojfeij");
             $manager->persist($user);
         }
         $manager->flush();
