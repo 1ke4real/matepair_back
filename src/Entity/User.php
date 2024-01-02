@@ -35,14 +35,15 @@ class User implements \Stringable
     private ?string $detail = null;
 
     #[ORM\OneToMany(mappedBy: 'user_notif', targetEntity: Notification::class)]
-    private Collection $relation;
+    private Collection $notification;
+
     public function __toString(): string
     {
         return $this->email;
     }
     public function __construct()
     {
-        $this->relation = new ArrayCollection();
+        $this->notification = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -113,24 +114,24 @@ class User implements \Stringable
     /**
      * @return Collection<int, Notification>
      */
-    public function getRelation(): Collection
+    public function getNotification(): Collection
     {
-        return $this->relation;
+        return $this->notification;
     }
 
-    public function addRelation(Notification $relation): static
+    public function addNotification(Notification $relation): static
     {
-        if (!$this->relation->contains($relation)) {
-            $this->relation->add($relation);
+        if (!$this->notification->contains($relation)) {
+            $this->notification->add($relation);
             $relation->setUserNotif($this);
         }
 
         return $this;
     }
 
-    public function removeRelation(Notification $relation): static
+    public function removeNotification(Notification $relation): static
     {
-        if ($this->relation->removeElement($relation)) {
+        if ($this->notification->removeElement($relation)) {
             // set the owning side to null (unless already changed)
             if ($relation->getUserNotif() === $this) {
                 $relation->setUserNotif(null);
@@ -139,4 +140,5 @@ class User implements \Stringable
 
         return $this;
     }
+
 }

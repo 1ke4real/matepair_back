@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Message;
 use Cassandra\Date;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
@@ -25,7 +26,7 @@ class MessageCrudController extends AbstractCrudController
             yield IdField::new('id')->hideOnForm(),
             yield TextareaField::new('content'),
             yield DateTimeField::new('timestamp'),
-
+            yield AssociationField::new('relation')
         ];
     }
 
