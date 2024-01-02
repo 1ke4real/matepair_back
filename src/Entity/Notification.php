@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
 #[ApiResource]
-class Notification
+class Notification implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,7 +26,10 @@ class Notification
     private ?User $user_notif = null;
 
 
-
+    public function __toString(): string
+    {
+        return $this->content;
+    }
     public function getId(): ?int
     {
         return $this->id;

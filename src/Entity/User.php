@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource]
-class User
+class User implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -36,7 +36,10 @@ class User
 
     #[ORM\OneToMany(mappedBy: 'user_notif', targetEntity: Notification::class)]
     private Collection $relation;
-
+    public function __toString(): string
+    {
+        return $this->email;
+    }
     public function __construct()
     {
         $this->relation = new ArrayCollection();
