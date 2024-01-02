@@ -24,8 +24,10 @@ class Message
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $timestamp = null;
 
-
-
+    #[ORM\ManyToOne(inversedBy: 'sentMessages')]
+    private ?User $sender = null;
+    #[ORM\ManyToOne(inversedBy: 'receivedMessages')]
+    private ?User $receiver = null;
     public function getId(): ?int
     {
         return $this->id;
@@ -58,4 +60,28 @@ class Message
     /**
      * @return Collection<int, User>
      */
+
+    public function getSender(): ?User
+    {
+        return $this->sender;
+    }
+
+    public function setSender(?User $sender): static
+    {
+        $this->sender = $sender;
+
+        return $this;
+    }
+
+    public function getReceiver(): ?User
+    {
+        return $this->receiver;
+    }
+
+    public function setReceiver(?User $receiver): static
+    {
+        $this->receiver = $receiver;
+
+        return $this;
+    }
 }

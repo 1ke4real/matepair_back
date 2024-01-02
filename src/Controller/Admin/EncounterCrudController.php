@@ -2,36 +2,34 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\User;
+use App\Entity\Encounter;
 use App\Enum\RoleEnum;
+use App\Enum\StatusTypeEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 
-
-class UserCrudController extends AbstractCrudController
+class EncounterCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return User::class;
+        return Encounter::class;
     }
 
 
     public function configureFields(string $pageName): iterable
     {
 
-            yield IdField::new('id')->hideOnForm();
-            yield TextField::new('username');
-            yield EmailField::new('email');
-            yield TextField::new('password');
-            yield ChoiceField::new('role')
-                ->setFormType(EnumType::class)
-                ->setFormTypeOption('class', RoleEnum::class);
-            yield TextEditorField::new('detail');
+           yield IdField::new('id')->hideOnForm();
+            yield AssociationField::new('relation', 'User');
+        yield ChoiceField::new('status')
+            ->setFormType(EnumType::class)
+            ->setFormTypeOption('class', StatusTypeEnum::class);
+
     }
 
 }

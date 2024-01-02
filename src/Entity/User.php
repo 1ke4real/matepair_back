@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use App\Enum\RoleEnum;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -28,8 +29,8 @@ class User implements \Stringable
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $role = null;
+    #[ORM\Column(length: 255, enumType: RoleEnum::class, options: ['default' => RoleEnum::USER])]
+    private ?RoleEnum $role = RoleEnum::USER;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $detail = null;
@@ -37,6 +38,15 @@ class User implements \Stringable
     #[ORM\OneToMany(mappedBy: 'user_notif', targetEntity: Notification::class)]
     private Collection $notification;
 
+
+    #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Message::class)]
+    private Collection $sentMessages;
+
+    #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: Message::class)]
+    private Collection $receivedMessages;
+
+    #[ORM\ManyToMany(targetEntity: Encounter::class, mappedBy: 'relation')]
+    private Collection $encounters;
     public function __toString(): string
     {
         return $this->email;
@@ -44,6 +54,7 @@ class User implements \Stringable
     public function __construct()
     {
         $this->notification = new ArrayCollection();
+        $this->encounters = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -82,17 +93,18 @@ class User implements \Stringable
 
     public function setPassword(string $password): static
     {
-        $this->password = $password;
+        $hash = password_hash($password, PASSWORD_BCRYPT);
+        $this->password = $hash;
 
         return $this;
     }
 
-    public function getRole(): ?string
+    public function getRole(): ?RoleEnum
     {
         return $this->role;
     }
 
-    public function setRole(string $role): static
+    public function setRole(RoleEnum $role): static
     {
         $this->role = $role;
 
@@ -136,6 +148,92 @@ class User implements \Stringable
             if ($relation->getUserNotif() === $this) {
                 $relation->setUserNotif(null);
             }
+        }
+
+        return $this;
+    }
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getSentMessages(): Collection
+    {
+        return $this->sentMessages;
+    }
+
+    public function addSentMessage(Message $message): static
+    {
+        if (!$this->sentMessages->contains($message)) {
+            $this->sentMessages->add($message);
+            $message->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSentMessage(Message $message): static
+    {
+        if ($this->sentMessages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getSender() === $this) {
+                $message->setSender(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getReceivedMessages(): Collection
+    {
+        return $this->receivedMessages;
+    }
+
+    public function addReceivedMessage(Message $message): static
+    {
+        if (!$this->receivedMessages->contains($message)) {
+            $this->receivedMessages->add($message);
+            $message->setReceiver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceivedMessage(Message $message): static
+    {
+        if ($this->receivedMessages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getReceiver() === $this) {
+                $message->setReceiver(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Encounter>
+     */
+    public function getEncounters(): Collection
+    {
+        return $this->encounters;
+    }
+
+    public function addEncounter(Encounter $encounter): static
+    {
+        if (!$this->encounters->contains($encounter)) {
+            $this->encounters->add($encounter);
+            $encounter->addRelation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEncounter(Encounter $encounter): static
+    {
+        if ($this->encounters->removeElement($encounter)) {
+            $encounter->removeRelation($this);
         }
 
         return $this;
