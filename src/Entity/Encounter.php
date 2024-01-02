@@ -22,11 +22,12 @@ class Encounter
     private ?StatusTypeEnum $status = StatusTypeEnum::WAITING;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'encounters')]
-    private Collection $relation;
+    private Collection $matches;
+
 
     public function __construct()
     {
-        $this->relation = new ArrayCollection();
+        $this->matches = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -49,23 +50,23 @@ class Encounter
     /**
      * @return Collection<int, User>
      */
-    public function getRelation(): Collection
+    public function getMatches(): Collection
     {
-        return $this->relation;
+        return $this->matches;
     }
 
-    public function addRelation(User $relation): static
+    public function addMatch(User $matches): static
     {
-        if (!$this->relation->contains($relation)) {
-            $this->relation->add($relation);
+        if (!$this->matches->contains($matches)) {
+            $this->matches->add($matches);
         }
 
         return $this;
     }
 
-    public function removeRelation(User $relation): static
+    public function removeMatch(User $matches): static
     {
-        $this->relation->removeElement($relation);
+        $this->matches->removeElement($matches);
 
         return $this;
     }

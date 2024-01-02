@@ -45,7 +45,7 @@ class User implements \Stringable
     #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: Message::class)]
     private Collection $receivedMessages;
 
-    #[ORM\ManyToMany(targetEntity: Encounter::class, mappedBy: 'relation')]
+    #[ORM\ManyToMany(targetEntity: Encounter::class, mappedBy: 'matcher')]
     private Collection $encounters;
     public function __toString(): string
     {
