@@ -23,7 +23,6 @@ class EncounterCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-
         yield IdField::new('id')->hideOnForm();
         yield AssociationField::new('matches');
         yield ChoiceField::new('status')
