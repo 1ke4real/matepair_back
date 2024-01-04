@@ -2,15 +2,11 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MessageRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
-#[ApiResource]
 class Message
 {
     #[ORM\Id]
@@ -23,10 +19,15 @@ class Message
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $timestamp = null;
-    #[ORM\ManyToOne(inversedBy: 'sentMessages')]
+
+    #[ORM\ManyToOne(inversedBy: 'send')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $sender = null;
-    #[ORM\ManyToOne(inversedBy: 'receivedMessages')]
+
+    #[ORM\ManyToOne(inversedBy: 'receive')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $receiver = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -55,10 +56,6 @@ class Message
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, User>
-     */
 
     public function getSender(): ?User
     {

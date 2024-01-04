@@ -20,12 +20,12 @@ class NotificationCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        return [
-           yield IdField::new('id')->hideOnForm(),
-            yield TextField::new('content'),
-            yield DateTimeField::new('timestamp'),
-            yield AssociationField::new('user_notif')
-        ];
+           yield IdField::new('id')->hideOnForm();
+            yield TextField::new('name');
+            yield TextEditorField::new('content');
+            yield DateTimeField::new('timestamp');
+            yield AssociationField::new('user_id');
+
     }
 
 }

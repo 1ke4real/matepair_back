@@ -2,14 +2,12 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
 use App\Repository\NotificationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
-#[ApiResource]
-class Notification implements \Stringable
+class Notification
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,22 +15,32 @@ class Notification implements \Stringable
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    private ?string $name = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $timestamp = null;
 
-    #[ORM\ManyToOne(inversedBy: 'relation')]
-    private ?User $user_notif = null;
+    #[ORM\ManyToOne(inversedBy: 'notifications')]
+    private ?User $user_id = null;
 
-
-    public function __toString(): string
-    {
-        return $this->content;
-    }
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     public function getContent(): ?string
@@ -40,7 +48,7 @@ class Notification implements \Stringable
         return $this->content;
     }
 
-    public function setContent(string $content): static
+    public function setContent(?string $content): static
     {
         $this->content = $content;
 
@@ -59,16 +67,15 @@ class Notification implements \Stringable
         return $this;
     }
 
-    public function getUserNotif(): ?User
+    public function getUserId(): ?User
     {
-        return $this->user_notif;
+        return $this->user_id;
     }
 
-    public function setUserNotif(?User $user_notif): static
+    public function setUserId(?User $user_id): static
     {
-        $this->user_notif = $user_notif;
+        $this->user_id = $user_id;
 
         return $this;
     }
-
 }
