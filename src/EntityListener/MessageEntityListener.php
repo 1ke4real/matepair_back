@@ -17,12 +17,14 @@ class MessageEntityListener
    public function __invoke(Message $message, LifecycleEventArgs $event): void
    {
        $message->setTimestamp(new \DateTime());
+       $entityManager = $event->getEntityManager();
        $notification = new Notification();
-
-       $notification->setUserId($message->getReceiver());
+       $newUser = $message->getReceiver();
+       $notification->setUserId($newUser);
        $notification->setName('Nouveau message');
-       $notification->setContent('Vous avez reçu un nouveau message de ');
+       $notification->setContent('Vous avez reçu un nouveau message de '.$message->getSender()->getUsername());
        $notification->setTimestamp(new \DateTime());
-       dump($notification);
+       $entityManager->persist($notification);
+         $entityManager->flush();
    }
 }
